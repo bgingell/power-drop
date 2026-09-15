@@ -52,7 +52,7 @@ Initial tuning assumptions:
 
 - Start with a 6-column by 8-row board and adjust only if playtesting exposes a problem.
 - Spawn values from `2` through `64`, weighted toward the smaller tiles; adjust the distribution through playtesting.
-- Keep the opening and middle steady: start at 525 ms and remove 5 ms per 1,000 points through 7,000. Then remove 12 ms per 1,000 points, capped at 375 ms.
+- Keep the opening and middle steady: start at 510 ms and remove 5 ms per 1,000 points through 7,000. Then remove 12 ms per 1,000 points, capped at 360 ms.
 - Award points for merge results and apply a visible cascade multiplier.
 
 ## Technical shape

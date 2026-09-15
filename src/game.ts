@@ -8,7 +8,7 @@ const SPAWN_POOL: TileValue[] = [2, 2, 2, 2, 4, 4, 4, 8, 8, 16, 32, 64]
 export const fallInterval = (score: number) => {
   const gentleSteps = Math.floor(Math.min(score, 7000) / 1000)
   const lateSteps = Math.floor(Math.max(0, score - 7000) / 1000)
-  return Math.max(375, 525 - gentleSteps * 5 - lateSteps * 12)
+  return Math.max(360, 510 - gentleSteps * 5 - lateSteps * 12)
 }
 
 export type TileValue = number
