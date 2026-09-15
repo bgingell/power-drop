@@ -9,6 +9,7 @@ import {
   emptyBoard,
   hardDrop,
   move,
+  moveToColumn,
   resolveMerges,
   tick,
   type GameState,
@@ -24,6 +25,17 @@ test('moves the active tile and stops at the walls', () => {
 
   expect(game.active?.column).toBe(0)
   expect(move(game, -1)).toBe(game)
+})
+
+test('moves directly toward a dragged column without crossing a blocker', () => {
+  const game = createGame(alwaysTwo)
+  const moved = moveToColumn(game, 5)
+  expect(moved.active?.column).toBe(5)
+
+  const board = emptyBoard()
+  board[cellIndex(0, 4)] = 4
+  const blocked = moveToColumn({ ...game, board }, 5)
+  expect(blocked.active?.column).toBe(3)
 })
 
 test('ticks downward and lands on the floor', () => {

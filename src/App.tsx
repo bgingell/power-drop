@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 import {
   COLUMNS,
   ROWS,
@@ -6,15 +6,34 @@ import {
   createGame,
   hardDrop,
   move,
+  moveToColumn,
   tick,
   type GameState,
 } from './game.ts'
 
 const cells = Array.from({ length: COLUMNS * ROWS })
+const BEST_SCORE_KEY = 'power-drop-best-score'
+
+type DragState = {
+  pointerId: number
+  startX: number
+  startY: number
+  startColumn: number
+}
+
+function loadBestScore() {
+  try {
+    const saved = Number.parseInt(globalThis.localStorage.getItem(BEST_SCORE_KEY) ?? '0', 10)
+    return Number.isFinite(saved) && saved > 0 ? saved : 0
+  } catch {
+    return 0
+  }
+}
 
 export default function App() {
   const [game, setGame] = useState<GameState>(() => createGame())
-  const [bestScore, setBestScore] = useState(0)
+  const [bestScore, setBestScore] = useState(loadBestScore)
+  const drag = useRef<DragState | null>(null)
 
   const moveLeft = useCallback(() => setGame((current) => move(current, -1)), [])
   const moveRight = useCallback(() => setGame((current) => move(current, 1)), [])
@@ -23,11 +42,11 @@ export default function App() {
 
   useEffect(() => {
     const timer = globalThis.setInterval(() => {
-      setGame((current) => tick(current))
-    }, 650)
+      if (!drag.current) setGame((current) => tick(current))
+    }, Math.max(260, 650 - Math.floor(game.score / 256) * 25))
 
     return () => globalThis.clearInterval(timer)
-  }, [])
+  }, [game.score])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -45,8 +64,47 @@ export default function App() {
   }, [drop, moveDown, moveLeft, moveRight])
 
   useEffect(() => {
-    setBestScore((current) => Math.max(current, game.score))
+    setBestScore((current) => {
+      const best = Math.max(current, game.score)
+      try {
+        globalThis.localStorage.setItem(BEST_SCORE_KEY, String(best))
+      } catch {
+        // The game still works when storage is unavailable.
+      }
+      return best
+    })
   }, [game.score])
+
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!game.active || game.status !== 'playing') return
+    drag.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startColumn: game.active.column,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const currentDrag = drag.current
+    if (!currentDrag || currentDrag.pointerId !== event.pointerId) return
+
+    const cellWidth = event.currentTarget.getBoundingClientRect().width / COLUMNS
+    const columnsMoved = Math.round((event.clientX - currentDrag.startX) / cellWidth)
+    setGame((current) => moveToColumn(current, currentDrag.startColumn + columnsMoved))
+  }
+
+  const finishDrag = (event: PointerEvent<HTMLDivElement>, cancelled = false) => {
+    const currentDrag = drag.current
+    if (!currentDrag || currentDrag.pointerId !== event.pointerId) return
+    drag.current = null
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    if (!cancelled && event.clientY - currentDrag.startY > 45) drop()
+  }
 
   return (
     <main className="app-shell">
@@ -80,7 +138,12 @@ export default function App() {
           className="game-board"
           role="grid"
           aria-label={`${COLUMNS} by ${ROWS} game board`}
+          aria-describedby="controls-help"
           style={{ '--columns': COLUMNS, '--rows': ROWS } as CSSProperties}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={finishDrag}
+          onPointerCancel={(event) => finishDrag(event, true)}
         >
           {cells.map((_, index) => (
             <span className="board-cell" role="gridcell" key={index} />
@@ -90,7 +153,7 @@ export default function App() {
               <div
                 className={`number-tile tile-${value} settled-tile`}
                 aria-label={`Settled tile ${value}`}
-                key={`tile-${index}`}
+                key={`tile-${index}-${value}`}
                 style={{ gridColumn: (index % COLUMNS) + 1, gridRow: Math.floor(index / COLUMNS) + 1 }}
               >
                 {value}
@@ -136,7 +199,7 @@ export default function App() {
         <button type="button" className="drop-control" onClick={drop}>Drop</button>
       </div>
 
-      <p className="prototype-note">Arrow keys to move · space or ↑ to drop</p>
+      <p className="prototype-note" id="controls-help">Drag to move · swipe down to drop · arrow keys + space also work</p>
     </main>
   )
 }

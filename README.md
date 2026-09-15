@@ -24,7 +24,7 @@ npm run check
 
 ## Playing
 
-Use the left and right arrow keys—or the on-screen arrow buttons—to position the falling tile. Press the down arrow to move it down one row, or press space/up arrow (or **Drop**) to drop it immediately.
+On a touch screen, drag across the board to position the falling tile and swipe down to drop it. Use the left and right arrow keys—or the on-screen arrow buttons—for precise movement. Press the down arrow to move one row, or press space/up arrow (or **Drop**) to drop immediately.
 
 Every orthogonally connected group of equal tiles merges at once. Each additional tile doubles the result, so three `2` tiles become one `8`. Gravity is applied after a merge, and any new matches continue as a cascade.
 

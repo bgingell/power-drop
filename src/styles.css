@@ -115,6 +115,9 @@ h1 {
   gap: var(--gap);
   width: 100%;
   aspect-ratio: 3 / 4;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .board-cell {
@@ -135,6 +138,7 @@ h1 {
   font-weight: 850;
   line-height: 1;
   box-shadow: inset 0 -4px 0 rgba(69, 37, 52, 0.16), 0 5px 12px rgba(0, 0, 0, 0.2);
+  animation: tile-arrive 150ms ease-out;
 }
 
 .tile-2 {
@@ -157,6 +161,26 @@ h1 {
 }
 .tile-64 {
   background: linear-gradient(145deg, #ff9dcf, #e865aa);
+}
+.tile-128 {
+  color: #302013;
+  background: linear-gradient(145deg, #ffb978, #ef814f);
+}
+.tile-256 {
+  background: linear-gradient(145deg, #ff918c, #e45462);
+}
+.tile-512 {
+  background: linear-gradient(145deg, #7c9dff, #526ed2);
+}
+.tile-1024 {
+  background: linear-gradient(145deg, #b68cff, #774fc7);
+  font-size: clamp(0.85rem, 5vw, 1.5rem);
+}
+.tile-2048 {
+  color: #302409;
+  background: linear-gradient(145deg, #ffe68a, #e9b938);
+  font-size: clamp(0.85rem, 5vw, 1.5rem);
+  box-shadow: inset 0 -4px 0 rgba(69, 37, 52, 0.12), 0 0 22px rgba(255, 200, 87, 0.48);
 }
 .number-tile:not(.tile-2):not(.tile-4):not(.tile-8):not(.tile-16):not(.tile-32):not(.tile-64) {
   background: linear-gradient(145deg, #f7f4ed, #c9c4d6);
@@ -213,6 +237,7 @@ h1 {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  animation: chain-arrive 240ms ease-out;
 }
 
 .game-controls {
@@ -250,6 +275,24 @@ h1 {
   text-align: center;
 }
 
+@keyframes tile-arrive {
+  from { opacity: 0.55; transform: scale(0.82); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes chain-arrive {
+  from { opacity: 0; transform: translateY(-0.6rem) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 390px) {
+  .app-shell { width: min(100% - 1.25rem, 430px); }
+  .game-header { margin-bottom: 1rem; }
+  .game-header button { padding-inline: 0.8rem; font-size: 0.8rem; }
+  .game-stats { gap: 0.4rem; }
+  .game-stats > div { padding-inline: 0.65rem; }
+}
+
 @media (max-height: 760px) and (orientation: landscape) {
   .app-shell { width: min(100% - 2rem, 360px); padding-block: 1rem; }
   .game-header { margin-bottom: 0.75rem; }
@@ -258,4 +301,6 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; }
+  .number-tile,
+  .cascade-badge { animation: none; }
 }

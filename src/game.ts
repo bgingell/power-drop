@@ -208,6 +208,22 @@ export function move(state: GameState, direction: -1 | 1): GameState {
   return { ...state, active: { ...state.active, column } }
 }
 
+export function moveToColumn(state: GameState, targetColumn: number): GameState {
+  if (!state.active || state.status !== 'playing') return state
+
+  const target = Math.max(0, Math.min(COLUMNS - 1, targetColumn))
+  const direction = target < state.active.column ? -1 : 1
+  let current = state
+
+  while (current.active && current.active.column !== target) {
+    const moved = move(current, direction)
+    if (moved === current) break
+    current = moved
+  }
+
+  return current
+}
+
 export function tick(state: GameState, draw: DrawTile = drawTile): GameState {
   if (!state.active || state.status !== 'playing') return state
 
