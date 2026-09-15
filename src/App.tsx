@@ -111,7 +111,7 @@ export default function App() {
     <main className="app-shell">
       <header className="game-header">
         <div>
-          <p className="eyebrow">Working title</p>
+          <p className="eyebrow">Stack · match · cascade</p>
           <h1>Power Drop</h1>
         </div>
         <button type="button" onClick={() => setGame(createGame())}>

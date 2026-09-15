@@ -4,7 +4,7 @@
 
 Build a polished, ad-free falling-number game for desktop and mobile browsers. A single power-of-two tile falls at a time; orthogonally connected tiles with the same value collapse together, and every merge can trigger a gravity-driven cascade.
 
-`Power Drop` is a working title.
+The game is named `Power Drop`.
 
 ## Approach
 
@@ -90,7 +90,7 @@ Suggested source layout:
 - Whether winning at `2048` should offer a continue-playing option
 - Exact score and cascade-multiplier formula
 - Whether a preview queue needs more than one tile
-- Final name and visual theme
+- Visual theme refinements
 
 ## Definition of done
 
