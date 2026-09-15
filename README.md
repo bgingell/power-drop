@@ -29,3 +29,7 @@ On a touch screen, drag across the board to position the falling tile and swipe 
 Every orthogonally connected group of equal tiles merges at once. Each additional tile doubles the result, so three `2` tiles become one `8`. Gravity is applied after a merge, and any new matches continue as a cascade.
 
 New tiles range from `2` to `64`, with smaller values appearing more often. Create a `2048` tile to win.
+
+## Playing on a phone
+
+Power Drop is designed to work as a Home Screen game as well as in a browser. On an iPhone, open the published game in Safari, choose **Share**, then **Add to Home Screen**. The icon launches the game in its own full-screen-style window, and the game remains available offline after it has loaded once.

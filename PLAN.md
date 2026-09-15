@@ -78,7 +78,7 @@ Suggested source layout:
 2. [x] **Make it playable** — implement left/right movement, falling, collision, landing, the next tile, restart, and game over.
 3. [x] **Add the core mechanic** — implement connected-group detection, exponential merging, gravity, and multi-wave cascades. Add focused tests for these rules.
 4. [x] **Make it feel good** — add touch controls and clear fall, merge, cascade, score, and game-over feedback; tune board size, tile distribution, and speed by playing it.
-5. [x] **Finish the small conveniences** — save the best score, handle reduced motion and common screen sizes, and keep offline installation out of the simple first version.
+5. [x] **Finish the small conveniences** — save the best score, handle reduced motion and common screen sizes, and support a standalone, offline-capable Home Screen experience.
 6. [ ] **Publish it** — build static assets, publish under `/power-drop/` in `bgingell.github.io`, and add a homepage feature or project card.
 
 ## Early decisions to validate through playtesting
@@ -94,4 +94,4 @@ Suggested source layout:
 
 ## Definition of done
 
-A complete game is fun and comfortable with touch or keyboard, merges and cascades behave consistently, reaching `2048` wins, restart and game over work, the best score persists locally, and the static build runs under the personal website.
+A complete game is fun and comfortable with touch or keyboard, merges and cascades behave consistently, reaching `2048` wins, restart and game over work, the best score persists locally, and the static build runs under the personal website as an offline-capable Home Screen game.
