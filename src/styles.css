@@ -111,7 +111,7 @@ h1 {
   grid-template-rows: repeat(var(--rows), 1fr);
   gap: var(--gap);
   width: 100%;
-  aspect-ratio: 3 / 5;
+  aspect-ratio: 3 / 4;
 }
 
 .board-cell {
@@ -154,4 +154,3 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; }
 }
-

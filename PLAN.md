@@ -50,7 +50,7 @@ This is a small personal game, not production software. Keep the code direct and
 
 Initial tuning assumptions:
 
-- Start with a small portrait board and test a few dimensions before locking it down.
+- Start with a 6-column by 8-row board and adjust only if playtesting exposes a problem.
 - Spawn mostly `2` tiles with some `4` tiles; adjust the distribution through playtesting.
 - Increase falling speed gradually as score or cleared tiles increase.
 - Award points for merge results and apply a visible cascade multiplier.
@@ -83,7 +83,7 @@ Suggested source layout:
 
 ## Early decisions to validate through playtesting
 
-- Final board width and height
+- Whether the initial 6-by-8 board needs adjustment
 - Touch-control scheme
 - Starting fall speed and acceleration curve
 - Tile spawn distribution

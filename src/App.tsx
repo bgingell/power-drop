@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const COLUMNS = 6
-const ROWS = 10
+const ROWS = 8
 const START_COLUMN = 2
 const cells = Array.from({ length: COLUMNS * ROWS })
 
@@ -67,4 +67,3 @@ export default function App() {
     </main>
   )
 }
-
