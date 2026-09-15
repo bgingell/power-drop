@@ -75,7 +75,7 @@ Suggested source layout:
 ## Implementation stages
 
 1. [x] **Get a board on screen** — scaffold from the same lightweight React, TypeScript, and Vite setup as Solitaire; render a responsive empty grid and one falling tile.
-2. [ ] **Make it playable** — implement left/right movement, falling, collision, landing, the next tile, restart, and game over.
+2. [x] **Make it playable** — implement left/right movement, falling, collision, landing, the next tile, restart, and game over.
 3. [ ] **Add the core mechanic** — implement connected-group detection, exponential merging, gravity, and multi-wave cascades. Add focused tests for these rules.
 4. [ ] **Make it feel good** — add touch controls and clear fall, merge, cascade, score, and game-over feedback; tune board size, tile distribution, and speed by playing it.
 5. [ ] **Finish the small conveniences** — save the best score, handle reduced motion and common screen sizes, and add optional offline support if it remains simple.

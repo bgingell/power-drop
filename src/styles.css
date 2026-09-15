@@ -64,7 +64,10 @@ h1 {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--line);
   border-radius: 999px;
+  cursor: pointer;
 }
+.game-header button:hover,
+.game-header button:focus-visible { color: var(--ink); border-color: rgba(255, 255, 255, 0.25); }
 
 .game-stats {
   display: grid;
@@ -137,6 +140,71 @@ h1 {
 .tile-2 {
   background: linear-gradient(145deg, #ff9aaf, var(--pink));
 }
+.tile-4 {
+  color: #2b2315;
+  background: linear-gradient(145deg, #ffdc83, var(--yellow));
+}
+.active-tile { z-index: 2; }
+.settled-tile { z-index: 1; }
+
+.game-over {
+  z-index: 5;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(17, 17, 30, 0.9);
+  border-radius: 0.65rem;
+  backdrop-filter: blur(5px);
+}
+.game-over p {
+  margin: 0 0 0.35rem;
+  color: var(--pink);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.game-over h2 { margin: 0 0 1.2rem; font-size: 2rem; }
+.game-over button,
+.game-controls button {
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+.game-over button { padding: 0.75rem 1.1rem; border-radius: 999px; }
+
+.game-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 1.45fr;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+.game-controls button {
+  min-height: 3.2rem;
+  border-radius: 0.7rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  touch-action: manipulation;
+}
+.game-controls .drop-control {
+  color: #251926;
+  background: var(--pink);
+  border-color: transparent;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.game-controls button:hover,
+.game-controls button:focus-visible,
+.game-over button:hover,
+.game-over button:focus-visible { border-color: var(--yellow); }
+
+:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
 
 .prototype-note {
   margin: 1rem 0 0;

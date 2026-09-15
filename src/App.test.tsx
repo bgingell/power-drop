@@ -6,5 +6,7 @@ test('renders the phase-one board and falling tile', () => {
 
   expect(screen.getByRole('grid', { name: '6 by 8 game board' })).toBeInTheDocument()
   expect(screen.getAllByRole('gridcell')).toHaveLength(48)
-  expect(screen.getByLabelText(/Falling tile 2/)).toBeInTheDocument()
+  expect(screen.getByLabelText(/Falling tile (2|4)/)).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Move left' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Drop' })).toBeInTheDocument()
 })

@@ -1,20 +1,46 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type CSSProperties } from 'react'
+import {
+  COLUMNS,
+  ROWS,
+  createGame,
+  hardDrop,
+  move,
+  tick,
+  type GameState,
+} from './game.ts'
 
-const COLUMNS = 6
-const ROWS = 8
-const START_COLUMN = 2
 const cells = Array.from({ length: COLUMNS * ROWS })
 
 export default function App() {
-  const [row, setRow] = useState(0)
+  const [game, setGame] = useState<GameState>(() => createGame())
+
+  const moveLeft = useCallback(() => setGame((current) => move(current, -1)), [])
+  const moveRight = useCallback(() => setGame((current) => move(current, 1)), [])
+  const moveDown = useCallback(() => setGame((current) => tick(current)), [])
+  const drop = useCallback(() => setGame((current) => hardDrop(current)), [])
 
   useEffect(() => {
     const timer = globalThis.setInterval(() => {
-      setRow((current) => (current === ROWS - 1 ? 0 : current + 1))
-    }, 450)
+      setGame((current) => tick(current))
+    }, 650)
 
     return () => globalThis.clearInterval(timer)
   }, [])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') moveLeft()
+      else if (event.key === 'ArrowRight') moveRight()
+      else if (event.key === 'ArrowDown') moveDown()
+      else if (event.key === ' ' || event.key === 'ArrowUp') drop()
+      else return
+
+      event.preventDefault()
+    }
+
+    globalThis.addEventListener('keydown', onKeyDown)
+    return () => globalThis.removeEventListener('keydown', onKeyDown)
+  }, [drop, moveDown, moveLeft, moveRight])
 
   return (
     <main className="app-shell">
@@ -23,7 +49,7 @@ export default function App() {
           <p className="eyebrow">Working title</p>
           <h1>Power Drop</h1>
         </div>
-        <button type="button" disabled>
+        <button type="button" onClick={() => setGame(createGame())}>
           New game
         </button>
       </header>
@@ -39,7 +65,7 @@ export default function App() {
         </div>
         <div className="next-tile">
           <span>Next</span>
-          <strong>4</strong>
+          <strong>{game.nextValue}</strong>
         </div>
       </section>
 
@@ -48,22 +74,51 @@ export default function App() {
           className="game-board"
           role="grid"
           aria-label={`${COLUMNS} by ${ROWS} game board`}
-          style={{ '--columns': COLUMNS, '--rows': ROWS } as React.CSSProperties}
+          style={{ '--columns': COLUMNS, '--rows': ROWS } as CSSProperties}
         >
           {cells.map((_, index) => (
             <span className="board-cell" role="gridcell" key={index} />
           ))}
-          <div
-            className="number-tile tile-2"
-            aria-label={`Falling tile 2, row ${row + 1}, column ${START_COLUMN + 1}`}
-            style={{ gridColumn: START_COLUMN + 1, gridRow: row + 1 }}
-          >
-            2
-          </div>
+          {game.board.map((value, index) =>
+            value === null ? null : (
+              <div
+                className={`number-tile tile-${value} settled-tile`}
+                aria-label={`Settled tile ${value}`}
+                key={`tile-${index}`}
+                style={{ gridColumn: (index % COLUMNS) + 1, gridRow: Math.floor(index / COLUMNS) + 1 }}
+              >
+                {value}
+              </div>
+            ),
+          )}
+          {game.active && (
+            <div
+              className={`number-tile tile-${game.active.value} active-tile`}
+              aria-label={`Falling tile ${game.active.value}, row ${game.active.row + 1}, column ${game.active.column + 1}`}
+              style={{ gridColumn: game.active.column + 1, gridRow: game.active.row + 1 }}
+            >
+              {game.active.value}
+            </div>
+          )}
+
+          {game.status === 'game-over' && (
+            <div className="game-over" role="dialog" aria-label="Game over">
+              <p>Stacked out</p>
+              <h2>Game over</h2>
+              <button type="button" onClick={() => setGame(createGame())}>Play again</button>
+            </div>
+          )}
         </div>
       </div>
 
-      <p className="prototype-note">Phase one prototype · the tile is only falling for now</p>
+      <div className="game-controls" aria-label="Game controls">
+        <button type="button" onClick={moveLeft} aria-label="Move left">←</button>
+        <button type="button" onClick={moveDown} aria-label="Move down">↓</button>
+        <button type="button" onClick={moveRight} aria-label="Move right">→</button>
+        <button type="button" className="drop-control" onClick={drop}>Drop</button>
+      </div>
+
+      <p className="prototype-note">Arrow keys to move · space or ↑ to drop</p>
     </main>
   )
 }
