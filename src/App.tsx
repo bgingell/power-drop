@@ -187,9 +187,6 @@ export default function App() {
             </div>
           )}
 
-          {game.cascadeDepth > 1 && game.status === 'playing' && (
-            <div className="cascade-badge" role="status">Chain ×{game.cascadeDepth}</div>
-          )}
         </div>
       </div>
 

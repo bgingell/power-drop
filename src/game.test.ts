@@ -157,5 +157,7 @@ test('wins when a merge creates 2048', () => {
 test('increases speed gradually without becoming frantic', () => {
   expect(fallInterval(0)).toBe(525)
   expect(fallInterval(6900)).toBe(495)
-  expect(fallInterval(100_000)).toBe(475)
+  expect(fallInterval(7000)).toBe(490)
+  expect(fallInterval(10_000)).toBe(454)
+  expect(fallInterval(100_000)).toBe(375)
 })
