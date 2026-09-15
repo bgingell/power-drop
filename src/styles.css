@@ -186,6 +186,8 @@ h1 {
   text-transform: uppercase;
 }
 .game-over h2 { margin: 0 0 1.2rem; font-size: 2rem; }
+.win-screen { background: rgba(32, 21, 54, 0.92); }
+.win-screen p { color: var(--yellow); font-size: 1rem; }
 .game-over button,
 .game-controls button {
   color: var(--ink);

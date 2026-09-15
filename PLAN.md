@@ -37,7 +37,7 @@ This is a small personal game, not production software. Keep the code direct and
 
 ## Version-one experience
 
-- Endless score-chasing mode
+- Reach `2048` to win, with score-chasing along the way
 - Current score and locally saved best score
 - Next-tile preview
 - New-game control
@@ -51,7 +51,7 @@ This is a small personal game, not production software. Keep the code direct and
 Initial tuning assumptions:
 
 - Start with a 6-column by 8-row board and adjust only if playtesting exposes a problem.
-- Spawn mostly `2` tiles with some `4` tiles; adjust the distribution through playtesting.
+- Spawn values from `2` through `64`, weighted toward the smaller tiles; adjust the distribution through playtesting.
 - Increase falling speed gradually as score or cleared tiles increase.
 - Award points for merge results and apply a visible cascade multiplier.
 
@@ -87,10 +87,11 @@ Suggested source layout:
 - Touch-control scheme
 - Starting fall speed and acceleration curve
 - Tile spawn distribution
+- Whether winning at `2048` should offer a continue-playing option
 - Exact score and cascade-multiplier formula
 - Whether a preview queue needs more than one tile
 - Final name and visual theme
 
 ## Definition of done
 
-A complete game is fun and comfortable with touch or keyboard, merges and cascades behave consistently, restart and game over work, the best score persists locally, and the static build runs under the personal website.
+A complete game is fun and comfortable with touch or keyboard, merges and cascades behave consistently, reaching `2048` wins, restart and game over work, the best score persists locally, and the static build runs under the personal website.

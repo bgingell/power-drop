@@ -1,6 +1,9 @@
 export const COLUMNS = 6
 export const ROWS = 8
 export const START_COLUMN = 2
+export const WIN_VALUE = 2048
+export const SPAWN_VALUES = [2, 4, 8, 16, 32, 64] as const
+const SPAWN_POOL: TileValue[] = [2, 2, 2, 2, 4, 4, 4, 8, 8, 16, 32, 64]
 
 export type TileValue = number
 
@@ -16,7 +19,7 @@ export type GameState = {
   nextValue: TileValue
   score: number
   cascadeDepth: number
-  status: 'playing' | 'game-over'
+  status: 'playing' | 'game-over' | 'won'
 }
 
 export type DrawTile = () => TileValue
@@ -25,7 +28,7 @@ export const emptyBoard = () => Array<TileValue | null>(COLUMNS * ROWS).fill(nul
 
 export const cellIndex = (row: number, column: number) => row * COLUMNS + column
 
-export const drawTile: DrawTile = () => (Math.random() < 0.75 ? 2 : 4)
+export const drawTile: DrawTile = () => SPAWN_POOL[Math.floor(Math.random() * SPAWN_POOL.length)]!
 
 export function createGame(draw: DrawTile = drawTile): GameState {
   return {
@@ -163,6 +166,17 @@ function land(state: GameState, draw: DrawTile): GameState {
   const landingCell = cellIndex(state.active.row, state.active.column)
   board[landingCell] = state.active.value
   const resolved = resolveMerges(board, landingCell)
+
+  if (resolved.board.some((value) => value !== null && value >= WIN_VALUE)) {
+    return {
+      ...state,
+      board: resolved.board,
+      active: null,
+      score: state.score + resolved.score,
+      cascadeDepth: resolved.cascadeDepth,
+      status: 'won',
+    }
+  }
 
   if (!isOpen(resolved.board, 0, START_COLUMN)) {
     return {

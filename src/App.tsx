@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import {
   COLUMNS,
   ROWS,
+  WIN_VALUE,
   createGame,
   hardDrop,
   move,
@@ -110,6 +111,14 @@ export default function App() {
             <div className="game-over" role="dialog" aria-label="Game over">
               <p>Stacked out</p>
               <h2>Game over</h2>
+              <button type="button" onClick={() => setGame(createGame())}>Play again</button>
+            </div>
+          )}
+
+          {game.status === 'won' && (
+            <div className="game-over win-screen" role="dialog" aria-label="You won">
+              <p>{WIN_VALUE}</p>
+              <h2>You won!</h2>
               <button type="button" onClick={() => setGame(createGame())}>Play again</button>
             </div>
           )}

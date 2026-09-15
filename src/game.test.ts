@@ -1,8 +1,11 @@
 import {
   COLUMNS,
   ROWS,
+  SPAWN_VALUES,
+  WIN_VALUE,
   cellIndex,
   createGame,
+  drawTile,
   emptyBoard,
   hardDrop,
   move,
@@ -109,4 +112,31 @@ test('applies gravity and resolves a multi-wave cascade', () => {
   expect(result.board.filter(Boolean)).toEqual([8])
   expect(result.score).toBe(20)
   expect(result.cascadeDepth).toBe(2)
+})
+
+test('spawns powers of two no larger than 64', () => {
+  const seen = new Set<number>()
+  for (let index = 0; index < 500; index += 1) seen.add(drawTile())
+
+  expect([...seen].every((value) => SPAWN_VALUES.includes(value as (typeof SPAWN_VALUES)[number]))).toBe(true)
+  expect(Math.max(...seen)).toBeLessThanOrEqual(64)
+})
+
+test('wins when a merge creates 2048', () => {
+  const board = emptyBoard()
+  board[cellIndex(ROWS - 1, 1)] = 1024
+  const game: GameState = {
+    board,
+    active: { row: 0, column: 2, value: 1024 },
+    nextValue: 2,
+    score: 0,
+    cascadeDepth: 0,
+    status: 'playing',
+  }
+
+  const result = hardDrop(game, alwaysTwo)
+
+  expect(result.board).toContain(WIN_VALUE)
+  expect(result.status).toBe('won')
+  expect(result.active).toBeNull()
 })
