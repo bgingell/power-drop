@@ -4,6 +4,7 @@ import {
   ROWS,
   WIN_VALUE,
   createGame,
+  fallInterval,
   hardDrop,
   move,
   moveToColumn,
@@ -43,7 +44,7 @@ export default function App() {
   useEffect(() => {
     const timer = globalThis.setInterval(() => {
       if (!drag.current) setGame((current) => tick(current))
-    }, Math.max(220, 550 - Math.floor(game.score / 256) * 30))
+    }, fallInterval(game.score))
 
     return () => globalThis.clearInterval(timer)
   }, [game.score])

@@ -7,6 +7,7 @@ import {
   createGame,
   drawTile,
   emptyBoard,
+  fallInterval,
   hardDrop,
   move,
   moveToColumn,
@@ -151,4 +152,10 @@ test('wins when a merge creates 2048', () => {
   expect(result.board).toContain(WIN_VALUE)
   expect(result.status).toBe('won')
   expect(result.active).toBeNull()
+})
+
+test('increases speed gradually without becoming frantic', () => {
+  expect(fallInterval(0)).toBe(525)
+  expect(fallInterval(6900)).toBe(495)
+  expect(fallInterval(100_000)).toBe(475)
 })
