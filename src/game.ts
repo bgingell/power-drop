@@ -2,7 +2,7 @@ export const COLUMNS = 6
 export const ROWS = 8
 export const START_COLUMN = 2
 
-export type TileValue = 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048
+export type TileValue = number
 
 export type ActiveTile = {
   row: number
@@ -14,6 +14,8 @@ export type GameState = {
   board: Array<TileValue | null>
   active: ActiveTile | null
   nextValue: TileValue
+  score: number
+  cascadeDepth: number
   status: 'playing' | 'game-over'
 }
 
@@ -30,7 +32,117 @@ export function createGame(draw: DrawTile = drawTile): GameState {
     board: emptyBoard(),
     active: { row: 0, column: START_COLUMN, value: draw() },
     nextValue: draw(),
+    score: 0,
+    cascadeDepth: 0,
     status: 'playing',
+  }
+}
+
+const neighborOffsets = [
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+  [0, 1],
+] as const
+
+function findGroups(board: GameState['board']) {
+  const visited = new Set<number>()
+  const groups: number[][] = []
+
+  for (let start = 0; start < board.length; start += 1) {
+    const value = board[start]
+    if (value === null || visited.has(start)) continue
+
+    const group: number[] = []
+    const queue = [start]
+    visited.add(start)
+
+    while (queue.length > 0) {
+      const current = queue.shift()
+      if (current === undefined) break
+      group.push(current)
+
+      const row = Math.floor(current / COLUMNS)
+      const column = current % COLUMNS
+      for (const [rowOffset, columnOffset] of neighborOffsets) {
+        const nextRow = row + rowOffset
+        const nextColumn = column + columnOffset
+        if (nextRow < 0 || nextRow >= ROWS || nextColumn < 0 || nextColumn >= COLUMNS) continue
+
+        const next = cellIndex(nextRow, nextColumn)
+        if (!visited.has(next) && board[next] === value) {
+          visited.add(next)
+          queue.push(next)
+        }
+      }
+    }
+
+    if (group.length >= 2) groups.push(group)
+  }
+
+  return groups
+}
+
+function chooseAnchor(group: number[], preferred: Set<number>) {
+  const preferredCells = group.filter((index) => preferred.has(index))
+  const choices = preferredCells.length > 0 ? preferredCells : group
+
+  return [...choices].sort((left, right) => {
+    const rowDifference = Math.floor(right / COLUMNS) - Math.floor(left / COLUMNS)
+    return rowDifference || (left % COLUMNS) - (right % COLUMNS)
+  })[0]!
+}
+
+function applyGravity(board: GameState['board'], preferred: Set<number>) {
+  const next = emptyBoard()
+  const movedPreferred = new Set<number>()
+
+  for (let column = 0; column < COLUMNS; column += 1) {
+    let targetRow = ROWS - 1
+    for (let row = ROWS - 1; row >= 0; row -= 1) {
+      const from = cellIndex(row, column)
+      const value = board[from]
+      if (value == null) continue
+
+      const to = cellIndex(targetRow, column)
+      next[to] = value
+      if (preferred.has(from)) movedPreferred.add(to)
+      targetRow -= 1
+    }
+  }
+
+  return { board: next, preferred: movedPreferred }
+}
+
+export function resolveMerges(board: GameState['board'], initialAnchor: number) {
+  let current = board
+  let preferred = new Set([initialAnchor])
+  let cascadeDepth = 0
+  let score = 0
+
+  while (true) {
+    const groups = findGroups(current)
+    if (groups.length === 0) return { board: current, score, cascadeDepth }
+
+    cascadeDepth += 1
+    const merged = [...current]
+    const anchors = new Set<number>()
+
+    for (const group of groups) {
+      const anchor = chooseAnchor(group, preferred)
+      const startingValue = current[group[0]!]
+      if (startingValue == null) continue
+
+      const result = startingValue * 2 ** (group.length - 1)
+      for (const index of group) merged[index] = null
+      merged[anchor] = result
+      anchors.add(anchor)
+      score += result * cascadeDepth
+    }
+
+    const gravityResult = applyGravity(merged, anchors)
+    current = gravityResult.board
+    preferred = gravityResult.preferred
   }
 }
 
@@ -48,16 +160,27 @@ function land(state: GameState, draw: DrawTile): GameState {
   if (!state.active) return state
 
   const board = [...state.board]
-  board[cellIndex(state.active.row, state.active.column)] = state.active.value
+  const landingCell = cellIndex(state.active.row, state.active.column)
+  board[landingCell] = state.active.value
+  const resolved = resolveMerges(board, landingCell)
 
-  if (!isOpen(board, 0, START_COLUMN)) {
-    return { ...state, board, active: null, status: 'game-over' }
+  if (!isOpen(resolved.board, 0, START_COLUMN)) {
+    return {
+      ...state,
+      board: resolved.board,
+      active: null,
+      score: state.score + resolved.score,
+      cascadeDepth: resolved.cascadeDepth,
+      status: 'game-over',
+    }
   }
 
   return {
-    board,
+    board: resolved.board,
     active: { row: 0, column: START_COLUMN, value: state.nextValue },
     nextValue: draw(),
+    score: state.score + resolved.score,
+    cascadeDepth: resolved.cascadeDepth,
     status: 'playing',
   }
 }
@@ -90,4 +213,3 @@ export function hardDrop(state: GameState, draw: DrawTile = drawTile): GameState
 
   return land({ ...state, active: { ...state.active, row } }, draw)
 }
-

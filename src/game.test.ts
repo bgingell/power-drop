@@ -1,4 +1,15 @@
-import { COLUMNS, ROWS, cellIndex, createGame, emptyBoard, hardDrop, move, tick, type GameState } from './game.ts'
+import {
+  COLUMNS,
+  ROWS,
+  cellIndex,
+  createGame,
+  emptyBoard,
+  hardDrop,
+  move,
+  resolveMerges,
+  tick,
+  type GameState,
+} from './game.ts'
 
 const alwaysTwo = () => 2 as const
 
@@ -37,6 +48,8 @@ test('ends the game when a landed tile blocks the spawn cell', () => {
     board,
     active: { row: 0, column: 2, value: 2 },
     nextValue: 2,
+    score: 0,
+    cascadeDepth: 0,
     status: 'playing',
   }
 
@@ -47,4 +60,53 @@ test('ends the game when a landed tile blocks the spawn cell', () => {
 
 test('board dimensions stay aligned with the cell array', () => {
   expect(emptyBoard()).toHaveLength(COLUMNS * ROWS)
+})
+
+test('merges an entire connected group into the landing tile', () => {
+  const board = emptyBoard()
+  board[cellIndex(ROWS - 1, 1)] = 2
+  board[cellIndex(ROWS - 1, 2)] = 2
+  board[cellIndex(ROWS - 1, 3)] = 2
+
+  const result = resolveMerges(board, cellIndex(ROWS - 1, 3))
+
+  expect(result.board[cellIndex(ROWS - 1, 3)]).toBe(8)
+  expect(result.board.filter(Boolean)).toEqual([8])
+  expect(result.score).toBe(8)
+  expect(result.cascadeDepth).toBe(1)
+})
+
+test('finds connected matches through all four directions', () => {
+  const board = emptyBoard()
+  const center = cellIndex(ROWS - 2, 2)
+  board[center] = 2
+  board[cellIndex(ROWS - 3, 2)] = 2
+  board[cellIndex(ROWS - 1, 2)] = 2
+  board[cellIndex(ROWS - 2, 1)] = 2
+  board[cellIndex(ROWS - 2, 3)] = 2
+
+  const result = resolveMerges(board, center)
+
+  expect(result.board.filter(Boolean)).toEqual([32])
+})
+
+test('applies gravity and resolves a multi-wave cascade', () => {
+  const board = emptyBoard()
+  board[cellIndex(ROWS - 1, 0)] = 4
+  board[cellIndex(ROWS - 1, 1)] = 2
+  const game: GameState = {
+    board,
+    active: { row: 0, column: 1, value: 2 },
+    nextValue: 2,
+    score: 0,
+    cascadeDepth: 0,
+    status: 'playing',
+  }
+
+  const result = hardDrop(game, alwaysTwo)
+
+  expect(result.board[cellIndex(ROWS - 1, 1)]).toBe(8)
+  expect(result.board.filter(Boolean)).toEqual([8])
+  expect(result.score).toBe(20)
+  expect(result.cascadeDepth).toBe(2)
 })

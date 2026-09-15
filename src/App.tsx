@@ -13,6 +13,7 @@ const cells = Array.from({ length: COLUMNS * ROWS })
 
 export default function App() {
   const [game, setGame] = useState<GameState>(() => createGame())
+  const [bestScore, setBestScore] = useState(0)
 
   const moveLeft = useCallback(() => setGame((current) => move(current, -1)), [])
   const moveRight = useCallback(() => setGame((current) => move(current, 1)), [])
@@ -42,6 +43,10 @@ export default function App() {
     return () => globalThis.removeEventListener('keydown', onKeyDown)
   }, [drop, moveDown, moveLeft, moveRight])
 
+  useEffect(() => {
+    setBestScore((current) => Math.max(current, game.score))
+  }, [game.score])
+
   return (
     <main className="app-shell">
       <header className="game-header">
@@ -57,11 +62,11 @@ export default function App() {
       <section className="game-stats" aria-label="Game information">
         <div>
           <span>Score</span>
-          <strong>0</strong>
+          <strong>{game.score}</strong>
         </div>
         <div>
           <span>Best</span>
-          <strong>0</strong>
+          <strong>{bestScore}</strong>
         </div>
         <div className="next-tile">
           <span>Next</span>
@@ -107,6 +112,10 @@ export default function App() {
               <h2>Game over</h2>
               <button type="button" onClick={() => setGame(createGame())}>Play again</button>
             </div>
+          )}
+
+          {game.cascadeDepth > 1 && game.status === 'playing' && (
+            <div className="cascade-badge" role="status">Chain ×{game.cascadeDepth}</div>
           )}
         </div>
       </div>

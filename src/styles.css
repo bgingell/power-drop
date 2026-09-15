@@ -144,6 +144,23 @@ h1 {
   color: #2b2315;
   background: linear-gradient(145deg, #ffdc83, var(--yellow));
 }
+.tile-8 {
+  color: #1c2630;
+  background: linear-gradient(145deg, #83e6d4, #35c7b0);
+}
+.tile-16 {
+  color: #171728;
+  background: linear-gradient(145deg, #a9c8ff, #719cf1);
+}
+.tile-32 {
+  background: linear-gradient(145deg, #c6a7ff, #9870ea);
+}
+.tile-64 {
+  background: linear-gradient(145deg, #ff9dcf, #e865aa);
+}
+.number-tile:not(.tile-2):not(.tile-4):not(.tile-8):not(.tile-16):not(.tile-32):not(.tile-64) {
+  background: linear-gradient(145deg, #f7f4ed, #c9c4d6);
+}
 .active-tile { z-index: 2; }
 .settled-tile { z-index: 1; }
 
@@ -177,6 +194,24 @@ h1 {
   cursor: pointer;
 }
 .game-over button { padding: 0.75rem 1.1rem; border-radius: 999px; }
+
+.cascade-badge {
+  z-index: 4;
+  align-self: start;
+  justify-self: center;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-top: 0.7rem;
+  padding: 0.45rem 0.8rem;
+  color: #251926;
+  background: var(--yellow);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
 
 .game-controls {
   display: grid;

@@ -21,3 +21,9 @@ Run the local checks with:
 ```bash
 npm run check
 ```
+
+## Playing
+
+Use the left and right arrow keys—or the on-screen arrow buttons—to position the falling tile. Press the down arrow to move it down one row, or press space/up arrow (or **Drop**) to drop it immediately.
+
+Every orthogonally connected group of equal tiles merges at once. Each additional tile doubles the result, so three `2` tiles become one `8`. Gravity is applied after a merge, and any new matches continue as a cascade.
