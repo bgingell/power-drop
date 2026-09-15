@@ -140,6 +140,7 @@ export default function App() {
           role="grid"
           aria-label={`${COLUMNS} by ${ROWS} game board`}
           aria-describedby="controls-help"
+          data-cascade={game.cascadeDepth > 0 || undefined}
           style={{ '--columns': COLUMNS, '--rows': ROWS } as CSSProperties}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
