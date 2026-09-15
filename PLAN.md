@@ -52,7 +52,7 @@ Initial tuning assumptions:
 
 - Start with a 6-column by 8-row board and adjust only if playtesting exposes a problem.
 - Spawn values from `2` through `64`, weighted toward the smaller tiles; adjust the distribution through playtesting.
-- Increase falling speed gradually as score or cleared tiles increase.
+- Start at a 550 ms fall interval, increase speed with score, and cap it at 220 ms.
 - Award points for merge results and apply a visible cascade multiplier.
 
 ## Technical shape

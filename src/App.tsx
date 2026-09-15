@@ -43,7 +43,7 @@ export default function App() {
   useEffect(() => {
     const timer = globalThis.setInterval(() => {
       if (!drag.current) setGame((current) => tick(current))
-    }, Math.max(260, 650 - Math.floor(game.score / 256) * 25))
+    }, Math.max(220, 550 - Math.floor(game.score / 256) * 30))
 
     return () => globalThis.clearInterval(timer)
   }, [game.score])
