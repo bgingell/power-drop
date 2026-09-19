@@ -161,3 +161,13 @@ test('increases speed gradually without becoming frantic', () => {
   expect(fallInterval(10_000)).toBe(439)
   expect(fallInterval(100_000)).toBe(360)
 })
+
+test('applies the selected speed while preserving score-based acceleration', () => {
+  expect(fallInterval(0, 1)).toBe(660)
+  expect(fallInterval(10_000, 1)).toBe(589)
+  expect(fallInterval(100_000, 1)).toBe(480)
+
+  expect(fallInterval(0, 5)).toBe(360)
+  expect(fallInterval(10_000, 5)).toBe(289)
+  expect(fallInterval(100_000, 5)).toBe(240)
+})

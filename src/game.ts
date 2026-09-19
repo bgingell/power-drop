@@ -3,12 +3,19 @@ export const ROWS = 8
 export const START_COLUMN = 2
 export const WIN_VALUE = 2048
 export const SPAWN_VALUES = [2, 4, 8, 16, 32, 64] as const
+export const DEFAULT_SPEED = 3
+export const MIN_SPEED = 1
+export const MAX_SPEED = 5
 const SPAWN_POOL: TileValue[] = [2, 2, 2, 2, 4, 4, 4, 8, 8, 16, 32, 64]
 
-export const fallInterval = (score: number) => {
+export const fallInterval = (score: number, speed = DEFAULT_SPEED) => {
+  const selectedSpeed = Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed))
+  const speedOffset = selectedSpeed - DEFAULT_SPEED
   const gentleSteps = Math.floor(Math.min(score, 7000) / 1000)
   const lateSteps = Math.floor(Math.max(0, score - 7000) / 1000)
-  return Math.max(360, 510 - gentleSteps * 5 - lateSteps * 12)
+  const startingInterval = 510 - speedOffset * 75
+  const minimumInterval = 360 - speedOffset * 60
+  return Math.max(minimumInterval, startingInterval - gentleSteps * 5 - lateSteps * 12)
 }
 
 export type TileValue = number

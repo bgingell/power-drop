@@ -272,6 +272,57 @@ h1 {
   text-align: center;
 }
 
+.speed-control {
+  margin-top: 1rem;
+  padding: 0.75rem 0.9rem 0.8rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+}
+
+.speed-heading,
+.speed-slider-row {
+  display: flex;
+  align-items: center;
+}
+
+.speed-heading {
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.speed-heading label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.speed-heading output {
+  color: var(--yellow);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.speed-slider-row { gap: 0.65rem; }
+
+.speed-slider-row span {
+  width: 2rem;
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+.speed-slider-row span:last-child { text-align: right; }
+
+.speed-slider-row input {
+  flex: 1;
+  min-width: 0;
+  height: 1.25rem;
+  margin: 0;
+  accent-color: var(--pink);
+  cursor: pointer;
+}
+
 @keyframes tile-arrive {
   from { opacity: 0.55; transform: scale(0.82); }
   to { opacity: 1; transform: scale(1); }
@@ -301,6 +352,7 @@ h1 {
   .app-shell { width: min(100% - 2rem, 360px); padding-block: 1rem; }
   .game-header { margin-bottom: 0.75rem; }
   .prototype-note { display: none; }
+  .speed-control { margin-top: 0.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

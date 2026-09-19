@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 import {
   COLUMNS,
+  DEFAULT_SPEED,
+  MAX_SPEED,
+  MIN_SPEED,
   ROWS,
   WIN_VALUE,
   createGame,
@@ -14,6 +17,7 @@ import {
 
 const cells = Array.from({ length: COLUMNS * ROWS })
 const BEST_SCORE_KEY = 'power-drop-best-score'
+const SPEED_LABELS = ['Relaxed', 'Easy', 'Normal', 'Quick', 'Rapid'] as const
 
 type DragState = {
   pointerId: number
@@ -34,6 +38,7 @@ function loadBestScore() {
 export default function App() {
   const [game, setGame] = useState<GameState>(() => createGame())
   const [bestScore, setBestScore] = useState(loadBestScore)
+  const [speed, setSpeed] = useState(DEFAULT_SPEED)
   const drag = useRef<DragState | null>(null)
 
   const moveLeft = useCallback(() => setGame((current) => move(current, -1)), [])
@@ -44,10 +49,10 @@ export default function App() {
   useEffect(() => {
     const timer = globalThis.setInterval(() => {
       if (!drag.current) setGame((current) => tick(current))
-    }, fallInterval(game.score))
+    }, fallInterval(game.score, speed))
 
     return () => globalThis.clearInterval(timer)
-  }, [game.score])
+  }, [game.score, speed])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -199,6 +204,27 @@ export default function App() {
       </div>
 
       <p className="prototype-note" id="controls-help">Drag to move · swipe down to drop · arrow keys + space also work</p>
+
+      <div className="speed-control">
+        <div className="speed-heading">
+          <label htmlFor="speed">Speed</label>
+          <output htmlFor="speed">{SPEED_LABELS[speed - MIN_SPEED]}</output>
+        </div>
+        <div className="speed-slider-row">
+          <span aria-hidden="true">Slow</span>
+          <input
+            id="speed"
+            type="range"
+            min={MIN_SPEED}
+            max={MAX_SPEED}
+            step="1"
+            value={speed}
+            aria-valuetext={SPEED_LABELS[speed - MIN_SPEED]}
+            onChange={(event) => setSpeed(Number(event.currentTarget.value))}
+          />
+          <span aria-hidden="true">Fast</span>
+        </div>
+      </div>
     </main>
   )
 }
